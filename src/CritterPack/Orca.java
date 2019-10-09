@@ -95,7 +95,11 @@ public class Orca extends Critter
             currentSweep = "RIGHT";
         }
         if ((info.getLeft() == Neighbor.SAME || info.getLeft() == Neighbor.WALL) && (info.getRight() == Neighbor.SAME || info.getRight() == Neighbor.WALL))
+        {
+            if (info.getFront()==Neighbor.SAME || info.getFront() == Neighbor.WALL)
+                return "LEFT";
             return "STAY";
+        }
         if (currentSweep == "LEFT")
         {
            if (info.getLeft() == Neighbor.SAME || info.getLeft() == Neighbor.WALL)
