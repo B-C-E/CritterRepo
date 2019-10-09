@@ -8,7 +8,7 @@ public class Orca extends Critter
     private int numbNeighbors;
     private boolean stateSweep; //sweeping = true, moving forwards = false
     private String currentSweep = "LEFT";//left, right, or stay -- direction to turn
-
+    private int spread = 1;//every 300 steps, move forwards 0ne
     public Action getMove(CritterInfo info)
     {
         if (info.getDirection() == Direction.NORTH)
@@ -21,7 +21,15 @@ public class Orca extends Critter
             lastDirFacing = "<";
 
         if (info.getFront() == Neighbor.OTHER) {
+            spread = 0;
             return Action.INFECT;
+        }
+
+        spread++;
+        if (spread%10 == 0)
+        {
+            spread = 0;
+            return Action.HOP;
         }
 
         //numbNeighbors = getNumbNeighbors(info);
