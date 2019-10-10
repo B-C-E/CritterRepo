@@ -9,24 +9,26 @@ public class Orca extends Critter
     private boolean stateSweep; //sweeping = true, moving forwards = false
     private String currentSweep = "LEFT";//left, right, or stay -- direction to turn
     private int spread = 1;//every spreadNumb steps, move forwards one tile
-    private int spreadNumb = 200;
+    private int spreadNumb = 1999;
     private int spreadNumbShift = 10;// after a while, switch to spreading more often
+    private int timeSinceInfect = 0;//how long since we've infected anyone?
 
     public Action getMove(CritterInfo info)
     {
-        if (info.getDirection() == Direction.NORTH)
-        lastDirFacing = "^";
-        if (info.getDirection() == Direction.EAST)
-            lastDirFacing = ">";
-        if (info.getDirection() == Direction.SOUTH)
-            lastDirFacing = "v";
-        if (info.getDirection() == Direction.WEST)
-            lastDirFacing = "<";
-
+        timeSinceInfect++;
+        
         if (info.getFront() == Neighbor.OTHER) {
             spread = 0;
+            timeSinceInfect = 0;
             return Action.INFECT;
         }
+
+        if(info.getLeft() == Neighbor.OTHER)
+            return Action.LEFT;
+        if (info.getRight() == Neighbor.OTHER)
+            return Action.RIGHT;
+        if (info.getBack() == Neighbor.OTHER)
+            return Action.LEFT;
 
         spread++;
         if (spread%spreadNumb == 0)
@@ -54,20 +56,20 @@ public class Orca extends Critter
 
 
 
-     return Action.HOP;
+        return Action.HOP;
     }
 
     public Color getColor()
     {
-
-        return Color.BLACK;
+        timeSinceInfect = Math.min(timeSinceInfect,255);
+        return new Color((float)((timeSinceInfect)/255.0),0.0f,(float)((timeSinceInfect)/255.0));
     }
 
     private int getNumbNeighbors(CritterInfo info)
     {
         int count = 0;
-     if ((info.getFront()==Neighbor.SAME )|| (info.getFront() == Neighbor.WALL))
-         count++;
+        if ((info.getFront()==Neighbor.SAME )|| (info.getFront() == Neighbor.WALL))
+            count++;
 
         if ((info.getRight()==Neighbor.SAME )|| (info.getRight() == Neighbor.WALL))
             count++;
@@ -102,16 +104,16 @@ public class Orca extends Critter
         }
         if (currentSweep == "LEFT")
         {
-           if (info.getLeft() == Neighbor.SAME || info.getLeft() == Neighbor.WALL)
-           return "RIGHT";
-           return "LEFT";
+            if (info.getLeft() == Neighbor.SAME || info.getLeft() == Neighbor.WALL)
+                return "RIGHT";
+            return "LEFT";
 
         }
 
         if (currentSweep == "RIGHT")
         {
             if (info.getRight() == Neighbor.SAME ||  info.getRight() == Neighbor.WALL)
-            return "LEFT";
+                return "LEFT";
             return "RIGHT";
 
         }
@@ -121,6 +123,6 @@ public class Orca extends Critter
 
     public String toString()
     {
-        return lastDirFacing;
+        return "0";
     }
 }
